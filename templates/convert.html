@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block body %}
+<style>
+    #txt_url{
+        width: 80%;
+        height:50px;
+        border:1px solid #d4d4d4;
+        background-color: #f8f8f8;
+        box-sizing:border-box;
+        padding:14px 18px;
+        margin:0
+        font-family: 'Muli',sans-serif,Arial,Helvetica;
+        outline: none;
+        color: #666;
+        vertical-align: top;
+        font-size: 14px;
+        line-height: 1.2em;
+        float: left;
+        
+    }
+
+    #btn_convert{
+        width: 20%;
+        height:50px;
+        background-color: #03367c;
+        color:#fff;
+        font-size: 18px;
+        line-height:50px;
+        display: inline-block;
+        border:none;
+        float: left;
+    }
+
+    .title{
+        margin: 50px 0 35px 0;
+        font-size: 28px;
+        color: #333;
+        font-weight: 600;
+        line-height: normal;
+        padding:0;
+        text-align:center;
+    }
+
+    #body{
+        width:70%;
+        margin:auto;
+        
+    }
+</style>
+<!--<img class=".banner" src="http://p4.music.126.net/LyQIhBoQlCjnQLwdE2G1Bg==/18799449813620429.jpg">-->
+<div id="body">
+<p class="title">qq音乐歌单导入到网易云音乐</p>
+  <form action="{{ url_for('convert') }}" method=post>
+
+      <input type=text name=url id="txt_url" placeholder="https://y.qq.com/n/yqq/playlist/xxxxxxxxxx.html">
+      <input type=submit value="DO IT" id="btn_convert">
+  </form>
+  <a href="http://music.163.com/#/import/kuwo">网易云酷我导入直达</a>
+</div>
+{% endblock %}
