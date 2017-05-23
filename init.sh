@@ -1,2 +1,2 @@
 apt-get install gunicorn
-pip install request, BeautifulSoup4
+pip install requests BeautifulSoup4 Flask
