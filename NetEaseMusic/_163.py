@@ -20,7 +20,13 @@ def getList(url):
     l = []
     for track in data['result']['tracks']:
         songname = track['name']
-        artistsname = track['artists'][0]['name']
+
+        artistsname = ''
+        for artist in track['artists']:
+            artistsname += artist['name'] + '/'
+        artistsname = artistsname[:-1]
+        # print artistsname
+
         albumname = track['album']['name']
         l.append((songname, artistsname, albumname))
     return l
@@ -28,4 +34,4 @@ def getList(url):
 
 
 if __name__ == '__main__':
-    print getList('http://music.163.com/#/playlist?id=98176052')
+    getList('http://music.163.com/#/playlist?id=98176052')
