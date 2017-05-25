@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block body %}
+<style>
+    .table{
+        width:49%;
+        display: block;
+        float:left;
+        margin:0.5%;
+    }
+    caption{
+        text-align: center;
+    }
+</style>
+<div class="container">
+    <p class="text-center" id="title">歌单比较</p>
+    <input type="text" id="url1" class="text" style="width:100%;margin:5px 0" placeholder="一个歌单地址 简称歌单A">
+    <input type="text" id="url2" class="text" style="width:100%;margin:5px 0" placeholder="另一个歌单地址 简称歌单B">
+    <input type="submit" value="比较" class="button" id="diff" style="width:30%;margin:auto;display:block;">
+</div>
+<div class="table">
+    <table data-toggle="table" id="table0">
+        <caption>仅歌单A有的歌曲</caption>
+        <thead>
+            <tr>
+                <th data-field='id'>ID</th>
+                <th data-field='song'>歌名</th>
+                <th data-field='singer'>歌手</th>
+                <th data-field='album'>专辑</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div class="table">
+    <table data-toggle="table" id="table1" >
+        <caption>仅歌单B有的歌曲</caption>
+        <thead>
+            <tr>
+                <th data-field='id'>ID</th>
+                <th data-field='song'>歌名</th>
+                <th data-field='singer'>歌手</th>
+                <th data-field='album'>专辑</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<script>
+    $("#nav_diff").attr("class", "active");
+
+    $("#diff").click(function(){
+        $.post("./diff",
+        {
+            url1:$("#url1").val(),
+            url2:$("#url2").val()
+        },
+        function(data){
+            j = JSON.parse(data)
+            console.log(j[0][0])
+            $("#table0").bootstrapTable('load',j[0]);
+            $("#table1").bootstrapTable('load',j[1]);
+        });
+    });
+</script>
+{% endblock %}

@@ -5,7 +5,7 @@
 @time : 2017/05/21 20:21
 @desc : 
 '''
-import os
+import os, json
 from flask import Flask, render_template, request, make_response, flash, redirect, url_for, send_from_directory
 from werkzeug.contrib.fixers import LighttpdCGIRootFix
 
@@ -21,10 +21,11 @@ def favicon():
 
 app.wsgi_app = LighttpdCGIRootFix(app.wsgi_app)
 @app.route('/')
+@app.route('/convert.html')
 def main():
     return render_template('convert.html')
 
-@app.route('/', methods=['POST'])
+@app.route('/convert', methods=['POST'])
 def convert():
     url = request.form['url']
     kwl = NetEaseMusic.getKwl(url)
@@ -33,6 +34,31 @@ def convert():
     res = make_response(kwl)
     res.headers["Content-Disposition"] = "attachment; filename=guys.kwl"
     return res
+
+@app.route('/diff.html')
+def diff_html():
+    return render_template('diff.html')
+
+@app.route('/diff', methods=['POST'])
+def diff():
+    url1 = request.form['url1']
+    url2 = request.form['url2']
+    diff1, diff2 = NetEaseMusic.diff(url1, url2)
+    def pack(diff):
+        l = []
+        i = 0
+        for data in diff:
+            i += 1
+            l.append({
+             'id':i,
+             'song':data[0],
+             'singer':data[1],
+             'album':data[2]
+         })
+        return l
+
+    return json.dumps([pack(diff1), pack(diff2)])
+
 
 if __name__ == '__main__':
     app.run(debug=True)
