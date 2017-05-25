@@ -2,7 +2,7 @@
 @author: comwrg
 @time  : 2017.05.21 18:28
 """
-import qq
+import qq, _163
 import HTMLParser
 
 
@@ -12,13 +12,11 @@ def getKwl(url):
     :param url: 
     :return: return kwl text
     '''
-    url = url.lower()
-    if url.startswith('https://y.qq.com'):
-        obj = qq
-    else:
+
+    info = getList(url)
+    if info == False:
         return False
 
-    info = obj.getList(url)
     kwl = ''
     for item in info:
         kwl += '    <so name="%s" artist="%s" album=""></so>\r\n' % (item[0], item[1])
@@ -28,5 +26,57 @@ def getKwl(url):
     kwl = kwl.encode('gb2312', errors='ignore')
     return kwl
 
+def getList(url):
+    '''
+    
+    :param url: 
+    :return:[(songname, artistname, albumname), ..] 
+    '''
+
+    url = url.lower()
+    if url.startswith('https://y.qq.com'):
+        obj = qq
+    elif url.startswith('http://music.163.com'):
+        obj = _163
+    else:
+        return False
+    return obj.getList(url)
+
+def diff(url1, url2):
+    '''
+    
+    :param url1: 
+    :param url2: 
+    :return: 
+    
+    '''
+    l1 = getList(url1)
+    l2 = getList(url2)
+
+    def diff(l, l_base):
+        '''
+        
+        :param l: 
+        :param l_base: 
+        :return:
+        '''
+        diff = []
+        for data1 in l:
+            isFind = False
+            for data2 in l_base:
+                if data1 == data2:
+                    isFind = True
+                    break
+
+            if not isFind:
+                diff.append(data1)
+        return diff
+
+    return diff(l1, l2), diff(l2, l1)
+
 if __name__ == '__main__':
-    getKwl('https://y.qq.com/n/yqq/playlist/3363492195.html')
+    # print getList('https://y.qq.com/n/yqq/playlist/3363492195.html')
+    print diff(
+        'https://y.qq.com/n/yqq/playlist/3363492195.html',
+        'http://music.163.com/#/playlist?id=98176052'
+    )
