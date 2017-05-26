@@ -57,7 +57,26 @@ def diff():
          })
         return l
 
-    return json.dumps([pack(diff1), pack(diff2)])
+    l = []; i=0
+    for data1 in diff1:
+        lista = []; listb = []
+        songname = ''
+        for data2 in diff2:
+            # song name equal
+            if data1[0] == data2[0]:
+                songname = data1[0]
+                lista.append(data1)
+                listb.append(data2)
+        if not songname == '':
+            i += 1
+            l.append({
+                'id': i,
+                'songname': songname,
+                'songlista': lista,
+                'songlistb': listb
+            })
+
+    return json.dumps([pack(diff1), pack(diff2), l])
 
 
 if __name__ == '__main__':

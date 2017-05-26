@@ -2,7 +2,8 @@
 {% block body %}
 <style>
     .table{
-        width:49%;
+        width:32%;
+        height: 65em;
         display: block;
         float:left;
         margin:0.5%;
@@ -10,12 +11,29 @@
     caption{
         text-align: center;
     }
+    .contrainer{
+        overflow:auto;
+    }
 </style>
 <div class="container">
     <p class="text-center" id="title">歌单比较(目前仅支持qq和网易)</p>
     <input type="text" id="url1" class="text" style="width:100%;margin:5px 0" placeholder="一个歌单地址 简称歌单A">
     <input type="text" id="url2" class="text" style="width:100%;margin:5px 0" placeholder="另一个歌单地址 简称歌单B">
     <input type="submit" value="比较" class="button" id="diff" style="width:30%;margin:auto;display:block;">
+</div>
+<div class="table">
+    <table data-toggle="table" id="table2">
+        <caption>歌名相同但歌手或专辑不同</caption>
+        <thead>
+            <tr>
+                <th data-field='id'>ID</th>
+                <th data-field='songlist'>歌单</th>
+                <th data-field='song'>歌名</th>
+                <th data-field='singer'>歌手</th>
+                <th data-field='album'>专辑</th>
+            </tr>
+        </thead>
+    </table>
 </div>
 <div class="table">
     <table data-toggle="table" id="table0">
@@ -45,7 +63,6 @@
 </div>
 <script>
     $("#nav_diff").attr("class", "active");
-
     $("#diff").click(function(){
         $.post("./diff",
         {
@@ -53,8 +70,79 @@
             url2:$("#url2").val()
         },
         function(data){
-            j = JSON.parse(data)
-            console.log(j[0][0])
+            j = JSON.parse(data);
+            $.each(j[2], function(i, data0){
+                $.each(data0['songlista'], function(j, data1){
+                    var data = {
+                        // 'id':data['id'],
+                        // 'songlist':'A',
+                        'song':data1[0],
+                        'singer':data1[1],
+                        'album':data1[2],
+                    }
+                    if(j == 0){
+                        data['id'] = data0['id'];
+                        data['songlist'] = 'A';
+                    }
+                    
+                    $("#table2").bootstrapTable('append',data);
+                });
+                
+                $.each(data0['songlistb'], function(j, data1){
+                    var data = {
+                        // 'id':data['id'],
+                        // 'songlist':'B',
+                        'song':data1[0],
+                        'singer':data1[1],
+                        'album':data1[2],
+                    }
+                    if(j == 0){
+                        // data['id'] = None;
+                        data['songlist'] = 'B';
+                    }
+                    
+                    $("#table2").bootstrapTable('append',data);
+                });
+
+            });
+
+            // set id rowspan
+            var k = 0;
+            $.each(j[2], function(i, data0){
+                var rowspan = data0.songlista.length + data0.songlistb.length;
+                data = {
+                    'index' : k,
+                    'field' : 'id',
+                    'rowspan' : rowspan,
+                    'colspan' : 1
+                }
+                // console.log(data)
+                $("#table2").bootstrapTable('mergeCells',data);
+                k += rowspan;
+            });
+
+            // set songlist rowspan
+            var k = 0;
+            $.each(j[2], function(i, data0){
+                data = {
+                    'index' : k,
+                    'field' : 'songlist',
+                    'rowspan' : data0['songlista'].length,
+                    'colspan' : 1
+                }
+                $("#table2").bootstrapTable('mergeCells',data);
+                k += data0['songlista'].length;
+
+                data = {
+                    'index' : k,
+                    'field' : 'songlist',
+                    'rowspan' : data0['songlistb'].length,
+                    'colspan' : 1
+                }
+                $("#table2").bootstrapTable('mergeCells',data);
+                k += data0['songlistb'].length;
+            });
+
             $("#table0").bootstrapTable('load',j[0]);
             $("#table1").bootstrapTable('load',j[1]);
         });
