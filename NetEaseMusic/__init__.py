@@ -19,7 +19,7 @@ def getKwl(url):
 
     kwl = ''
     for item in info:
-        kwl += '    <so name="%s." artist="%s" album=""></so>\r\n' % (item[0], item[1])
+        kwl += '    <so name="%s." artist="%s" album=""></so>\r\n' % (item[0].replace('"', ''), item[1])
     kwl = '<so>\r\n%s</so>' % kwl
 
     kwl = HTMLParser.HTMLParser().unescape(kwl)
