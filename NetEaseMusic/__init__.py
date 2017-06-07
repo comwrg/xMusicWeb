@@ -34,9 +34,12 @@ def getList(url):
     '''
 
     url = url.lower()
-    if url.startswith('https://y.qq.com'):
+    url_nohttp = url[:]
+    url_nohttp = url_nohttp.replace('https://', '')
+    url_nohttp = url_nohttp.replace('http://' , '')
+    if url_nohttp.startswith('y.qq.com'):
         obj = qq
-    elif url.startswith('http://music.163.com'):
+    elif url_nohttp.startswith('music.163.com'):
         obj = _163
     else:
         return False
