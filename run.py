@@ -56,27 +56,34 @@ def diff():
              'album':data[2]
          })
         return l
-
-    l = []; i=0
-    for data1 in diff1:
-        lista = []; listb = []
-        songname = ''
-        for data2 in diff2:
-            # song name equal
+    
+    # onlysamesongname: only same song name but diff album or singer
+    onlysamesongname = []; i=0
+    for data1 in diff1[:]:
+        lista = []; listb = []; songname = ''
+        for data2 in diff2[:]:
+            # if song name equal, add to list
             if data1[0] == data2[0]:
                 songname = data1[0]
                 lista.append(data1)
                 listb.append(data2)
+                # remove song of the same song
+                # why use try because data1 will be deleted in first cycle
+                try:
+                    diff1.remove(data1)
+                    diff2.remove(data2)
+                except:
+                    pass
         if not songname == '':
             i += 1
-            l.append({
+            onlysamesongname.append({
                 'id': i,
                 'songname': songname,
                 'songlista': lista,
                 'songlistb': listb
             })
 
-    return json.dumps([pack(diff1), pack(diff2), l])
+    return json.dumps([pack(diff1), pack(diff2), onlysamesongname])
 
 
 if __name__ == '__main__':
