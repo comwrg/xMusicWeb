@@ -44,4 +44,4 @@ def getList(url):
 
 
 if __name__ == '__main__':
-    print getList('https://y.qq.com/n/yqq/playlist/3363492195.html')
+    print(getList('https://y.qq.com/n/yqq/playlist/3363492195.html'))

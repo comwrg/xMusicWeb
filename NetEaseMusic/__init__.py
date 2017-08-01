@@ -2,7 +2,7 @@
 @author: comwrg
 @time  : 2017.05.21 18:28
 """
-import qq, _163
+from . import qq, _163
 import HTMLParser
 
 
@@ -79,7 +79,7 @@ def diff(url1, url2):
 
 if __name__ == '__main__':
     # print getList('https://y.qq.com/n/yqq/playlist/3363492195.html')
-    print diff(
+    print(diff(
         'https://y.qq.com/n/yqq/playlist/3363492195.html',
         'http://music.163.com/#/playlist?id=98176052'
-    )
+    ))
