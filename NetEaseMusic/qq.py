@@ -18,7 +18,7 @@ def getList(url):
 
     songnameList = soup.find_all('span', class_='songlist__songname_txt')
     # [<span class="songlist__songname_txt"><a href="javascript:;" title="趁早">趁早</a></span>,
-    songnameList = map(lambda x:x.text, songnameList)
+    songnameList = list(map(lambda x:x.text, songnameList))
 
     singerList = soup.find_all('div', class_='songlist__artist')
     # [<a href="javascript:;" title="张惠妹" class="singer_name">张惠妹</a>, ...
@@ -30,14 +30,14 @@ def getList(url):
         return s
 
 
-    singerList = map(f, singerList)
+    singerList = list(map(f, singerList))
     #print singerList
 
     albumList = soup.find_all('div', class_='songlist__album')
     # [<div class="songlist__album">
     # <a href="javascript:;" title="不顾一切">不顾一切</a>
     # </div>,
-    albumList = map(lambda x:x.text.strip(), albumList)
+    albumList = list(map(lambda x:x.text.strip(), albumList))
     #print len(songnameList), len(singerList), len(albumList)
     return [(songnameList[x], singerList[x], albumList[x]) for x in range(len(songnameList))]
 
