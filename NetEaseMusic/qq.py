@@ -4,7 +4,7 @@
 @time  : 2017.05.21 18:28
 '''
 import requests
-from bs4 import BeautifulSoup
+import re
 
 def getList(url):
     '''
@@ -12,33 +12,25 @@ def getList(url):
     :param url: 
     :return: [(歌名, 歌手, 专辑), ...]
     '''
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, 'html.parser')
-    #print r.text
+    id = re.search(r'playlist/(\d*)\.html', url).group(1)
 
-    songnameList = soup.find_all('span', class_='songlist__songname_txt')
-    # [<span class="songlist__songname_txt"><a href="javascript:;" title="趁早">趁早</a></span>,
-    songnameList = list(map(lambda x:x.text, songnameList))
+    r = requests.get('https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg?type=1&json=1&utf8=1&onlysong=0&disstid={id}&format=json'.format(id=id))
+    songlist = r.json()['cdlist'][0]['songlist']
 
-    singerList = soup.find_all('div', class_='songlist__artist')
-    # [<a href="javascript:;" title="张惠妹" class="singer_name">张惠妹</a>, ...
+    songnameList = []
+    singerList = []
+    albumList = []
+    for song in songlist:
+        # get song name
+        songnameList.append(song['songname'])
 
-    def f(x):
-        s = ''
-        for i in x:
-            s += i.string.strip()
-        return s
+        # get singer
+        singers = [singer['name'] for singer in song['singer']]
+        singerList.append('/'.join(singers))
 
+        # get album
+        albumList.append(song['albumname'])
 
-    singerList = list(map(f, singerList))
-    #print singerList
-
-    albumList = soup.find_all('div', class_='songlist__album')
-    # [<div class="songlist__album">
-    # <a href="javascript:;" title="不顾一切">不顾一切</a>
-    # </div>,
-    albumList = list(map(lambda x:x.text.strip(), albumList))
-    #print len(songnameList), len(singerList), len(albumList)
     return [(songnameList[x], singerList[x], albumList[x]) for x in range(len(songnameList))]
 
 
