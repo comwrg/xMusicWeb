@@ -14,7 +14,10 @@ def getList(url):
     '''
     id = re.search(r'playlist/(\d*)\.html', url).group(1)
 
-    r = requests.get('https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg?type=1&json=1&utf8=1&onlysong=0&disstid={id}&format=json'.format(id=id))
+    r = requests.get('https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg?type=1&json=1&utf8=1&onlysong=0&disstid={id}&format=json'.format(id=id),
+                     headers={
+                         "Referer": "https://y.qq.com/n/yqq/playlist/{id}.html".format(id=id)
+                     })
     songlist = r.json()['cdlist'][0]['songlist']
 
     songnameList = []
